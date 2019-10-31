@@ -13,6 +13,7 @@
 		F2C2679E236B5DB300CFAE37 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2C2679C236B5DB300CFAE37 /* Main.storyboard */; };
 		F2C267A0236B5DB400CFAE37 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F2C2679F236B5DB400CFAE37 /* Assets.xcassets */; };
 		F2C267A3236B5DB400CFAE37 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2C267A1236B5DB400CFAE37 /* LaunchScreen.storyboard */; };
+		F2C267AC236B6B0B00CFAE37 /* GameOfLifeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C267AB236B6B0B00CFAE37 /* GameOfLifeScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		F2C2679F236B5DB400CFAE37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F2C267A2236B5DB400CFAE37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F2C267A4236B5DB400CFAE37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F2C267AB236B6B0B00CFAE37 /* GameOfLifeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfLifeScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +58,32 @@
 		F2C26795236B5DB300CFAE37 /* Game Of Life */ = {
 			isa = PBXGroup;
 			children = (
+				F2C267AD236B6B1300CFAE37 /* Controllers */,
+				F2C267AE236B6B2600CFAE37 /* Views */,
 				F2C26796236B5DB300CFAE37 /* AppDelegate.swift */,
-				F2C26798236B5DB300CFAE37 /* art.scnassets */,
-				F2C2679A236B5DB300CFAE37 /* GameViewController.swift */,
-				F2C2679C236B5DB300CFAE37 /* Main.storyboard */,
+				F2C267AB236B6B0B00CFAE37 /* GameOfLifeScene.swift */,
 				F2C2679F236B5DB400CFAE37 /* Assets.xcassets */,
-				F2C267A1236B5DB400CFAE37 /* LaunchScreen.storyboard */,
+				F2C26798236B5DB300CFAE37 /* art.scnassets */,
 				F2C267A4236B5DB400CFAE37 /* Info.plist */,
 			);
 			path = "Game Of Life";
+			sourceTree = "<group>";
+		};
+		F2C267AD236B6B1300CFAE37 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F2C2679A236B5DB300CFAE37 /* GameViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		F2C267AE236B6B2600CFAE37 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F2C2679C236B5DB300CFAE37 /* Main.storyboard */,
+				F2C267A1236B5DB400CFAE37 /* LaunchScreen.storyboard */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -77,6 +96,7 @@
 				F2C2678F236B5DB300CFAE37 /* Sources */,
 				F2C26790236B5DB300CFAE37 /* Frameworks */,
 				F2C26791236B5DB300CFAE37 /* Resources */,
+				F2C267AA236B5F8D00CFAE37 /* Run SwiftLint Script */,
 			);
 			buildRules = (
 			);
@@ -134,6 +154,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		F2C267AA236B5F8D00CFAE37 /* Run SwiftLint Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftLint Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		F2C2678F236B5DB300CFAE37 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -141,6 +182,7 @@
 			files = (
 				F2C2679B236B5DB300CFAE37 /* GameViewController.swift in Sources */,
 				F2C26797236B5DB300CFAE37 /* AppDelegate.swift in Sources */,
+				F2C267AC236B6B0B00CFAE37 /* GameOfLifeScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
