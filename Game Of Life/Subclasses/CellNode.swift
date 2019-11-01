@@ -17,9 +17,11 @@ class CellNode: SCNNode {
         super.init()
     }
 
-    init(size: CGFloat) {
+    init(radius: CGFloat, _ color: UIColor = .white) {
         super.init()
-        self.geometry = SCNSphere(radius: size)
+        let geometry = SCNSphere(radius: radius)
+        geometry.materials.first?.diffuse.contents = color
+        self.geometry = geometry
     }
 
     required init?(coder: NSCoder) {

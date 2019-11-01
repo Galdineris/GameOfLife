@@ -12,9 +12,9 @@ import SceneKit
 
 class GameViewController: UIViewController {
 
-    var globalMatrix: [[Int]] = [[0, 0, 0],
+    var globalMatrix: [[Int]] = [[1, 0, 0],
                                  [0, 1, 0],
-                                 [0, 0, 0]]
+                                 [0, 0, 1]]
 
     var scnView: SCNView?
     var scnScene: SCNScene?
@@ -75,12 +75,18 @@ class GameViewController: UIViewController {
 
     func placeSpheres(matrix: [[Int]]) {
         let radius: Int = 1
+        var color: UIColor = .white
         guard let scene = scnScene else {
             return
         }
         for col in 0...matrix.count - 1 {
             for row in 0...matrix[0].count - 1 {
-                let cell = CellNode(size: CGFloat(radius))
+                if matrix[row][col] == 1 {
+                    color = UIColor.blue
+                } else {
+                    color = UIColor.orange
+                }
+                let cell = CellNode(radius: CGFloat(radius), color)
                 cell.position = SCNVector3(col * radius * 3, row * radius * 3, 0)
                 scene.rootNode.addChildNode(cell)
             }
