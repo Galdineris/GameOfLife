@@ -6,8 +6,8 @@
 //  Copyright © 2019 Rafael Galdino. All rights reserved.
 //
 
-import UIKit
 import SceneKit
+import UIKit
 
 class GameOfLifeScene: SCNScene {
     override init() {
@@ -27,7 +27,6 @@ class GameOfLifeScene: SCNScene {
             light.type = .omni
         }
         lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-        self.rootNode.addChildNode(lightNode)
 
         // create and add an ambient light to the scene
         let ambientLightNode = SCNNode()
@@ -36,6 +35,8 @@ class GameOfLifeScene: SCNScene {
             light.type = .ambient
             light.color = UIColor.darkGray
         }
+
+        self.rootNode.addChildNode(lightNode)
         self.rootNode.addChildNode(ambientLightNode)
     }
 

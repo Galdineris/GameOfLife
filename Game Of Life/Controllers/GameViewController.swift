@@ -12,20 +12,29 @@ import SceneKit
 
 class GameViewController: UIViewController {
 
+    var globalMatrix: [[Int]] = [[0, 0, 0],
+                                 [0, 1, 0],
+                                 [0, 0, 0]]
+
+    var scnView: SCNView?
+    var scnScene: SCNScene?
+    var cameraNode: SCNNode?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // create a new scene
-        let scene = GameOfLifeScene()
+        setupView()
+        setupScene()
+        setupCamera()
+        placeSpheres(matrix: globalMatrix)
+    }
 
-        // retrieve the SCNView
+    func setupView() {
+        // unwrap the SCNView
         guard let scnView = self.view as? SCNView else {
             return
         }
-
-        // set the scene to the view
-        scnView.scene = scene
-
         // allows the user to manipulate the camera
         scnView.allowsCameraControl = true
 
@@ -34,10 +43,48 @@ class GameViewController: UIViewController {
 
         // configure the view
         scnView.backgroundColor = UIColor.black
+        scnView.autoenablesDefaultLighting = true
 
         // add a tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         scnView.addGestureRecognizer(tapGesture)
+    }
+
+    func setupScene() {
+        // Create Scene Object
+        scnScene = GameOfLifeScene()
+        // unwrap the SCNView
+        guard let scnView = self.view as? SCNView, let scene = scnScene else {
+            return
+        }
+        // set the scene to the view
+        scnView.scene = scene
+    }
+
+    func setupCamera() {
+        // unwrap the cameraNode
+        guard let scnView = self.view as? SCNView else {
+            return
+        }
+        cameraNode = scnView.pointOfView
+        guard let camera = cameraNode else {
+            return
+        }
+        camera.position = SCNVector3(0, 0, 30)
+    }
+
+    func placeSpheres(matrix: [[Int]]) {
+        let radius: Int = 1
+        guard let scene = scnScene else {
+            return
+        }
+        for col in 0...matrix.count - 1 {
+            for row in 0...matrix[0].count - 1 {
+                let cell = CellNode(size: CGFloat(radius))
+                cell.position = SCNVector3(col * radius * 3, row * radius * 3, 0)
+                scene.rootNode.addChildNode(cell)
+            }
+        }
     }
 
     @objc
@@ -53,7 +100,7 @@ class GameViewController: UIViewController {
         // check that we clicked on at least one object
         if !hitResults.isEmpty {
             // retrieved the first clicked object
-            let result = hitResults[0]
+            _ = hitResults[0]
         }
     }
     override var shouldAutorotate: Bool {
@@ -69,5 +116,4 @@ class GameViewController: UIViewController {
             return .all
         }
     }
-
 }
