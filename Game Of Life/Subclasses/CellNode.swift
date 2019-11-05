@@ -10,7 +10,7 @@ import SceneKit
 import UIKit
 
 class CellNode: SCNNode {
-    var location: (Int, Int) = (0, 0)
+    var location: (x: Int, y: Int) = (0, 0)
     var color: UIColor = UIColor.systemGray {
         didSet {
             DispatchQueue.main.async {

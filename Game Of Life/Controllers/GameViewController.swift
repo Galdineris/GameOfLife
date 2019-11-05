@@ -20,6 +20,7 @@ class GameViewController: UIViewController {
     var scnScene: SCNScene?
     var cameraNode: SCNNode?
     var spawnTime: TimeInterval = 0
+    var timeLoopSize: Float = 1
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,8 +29,9 @@ class GameViewController: UIViewController {
         setupView()
         setupScene()
         setupCamera()
-        GameLogic.newGame(size: 10)
+        GameLogic.newGame(size: 100)
         placeSpheres(matrix: GameLogic.controlMatrix)
+        updateSpheres(matrix: GameLogic.controlMatrix)
     }
 
     @objc
@@ -46,11 +48,12 @@ class GameViewController: UIViewController {
             if !hitResults.isEmpty {
                 // retrieved the first clicked object
                 if let tappedNode = hitResults[0].node as? CellNode {
+                    spawnTime += TimeInterval(1.0)
                     GameLogic.changeState(of: tappedNode.location)
-                    placeSpheres(matrix: GameLogic.controlMatrix)
+                    updateSpheres(matrix: GameLogic.controlMatrix)
                 }
-                
             }
+
         }
 
         // check that we clicked on at least one object
@@ -76,6 +79,11 @@ extension GameViewController {
         guard let scnView = self.view as? SCNView else {
             return
         }
+
+        scnView.delegate = self
+        scnView.loops = true
+        scnView.isPlaying = true
+
         // allows the user to manipulate the camera
         scnView.allowsCameraControl = true
 
@@ -118,28 +126,31 @@ extension GameViewController {
     }
 
     func placeSpheres(matrix: [[Int]]) {
-        for node in nodes {
-            node.removeFromParentNode()
-        }
-        nodes = []
         let radius: CGFloat = 0.5
-        var color: UIColor = .white
+        let dislocation: CGFloat = ((radius * 2) * CGFloat(matrix.count)) * CGFloat(sqrtf(2))/2
         guard let scene = scnScene else {
             return
         }
         for row in 0...matrix.count - 1 {
             for col in 0...matrix[0].count - 1 {
-                if matrix[row][col] == 0 {
-                    color = UIColor.systemGray
-                } else {
-                    color = UIColor.systemYellow
-                }
                 let cell = CellNode(radius: CGFloat(radius))
                 cell.location = (row, col)
                 nodes.append(cell)
-                cell.color = color
-                cell.position = SCNVector3(CGFloat(col) * radius * 2.5, CGFloat(row) * radius * 2.5, 0)
+                cell.color = .systemGray
+                cell.position = SCNVector3((CGFloat(col) * radius * 2.5) - dislocation,
+                                           (CGFloat(row) * radius * 2.5) - dislocation,
+                                           0)
                 scene.rootNode.addChildNode(cell)
+            }
+        }
+    }
+
+    func updateSpheres(matrix: [[Int]]) {
+        for node in nodes {
+            if matrix[node.location.x][node.location.y] != 0 {
+                node.color = UIColor.systemYellow
+            } else {
+                node.color = UIColor.systemGray
             }
         }
     }
@@ -149,7 +160,7 @@ extension GameViewController: SCNSceneRendererDelegate {
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         if time > spawnTime && !GameLogic.paused {
             GameLogic.nextGen()
-            placeSpheres(matrix: GameLogic.controlMatrix)
+            updateSpheres(matrix: GameLogic.controlMatrix)
             spawnTime = time + TimeInterval(1.0)
         }
     }

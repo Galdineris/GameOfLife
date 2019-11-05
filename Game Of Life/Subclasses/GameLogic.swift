@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SceneKit
 
 class GameLogic {
     static var size: Int = 0
@@ -32,21 +33,15 @@ class GameLogic {
     }
 
     public static func nextGen() {
+        var neighbors: Int = 0
+        alive = []
         for row in 0...size - 1 {
             for col in 0...size - 1 {
-                switch getSum(of: (row, col)) {
-                case 2...3:
-                    if alive.firstIndex(where: { (location) -> Bool in
-                        return (location.0 == row && location.1 == col)
-                    }) == nil {
-                        alive.append((row, col))
-                    }
-                default:
-                    if let cellIndex = alive.firstIndex(where: { (location) -> Bool in
-                        return (location.0 == row && location.1 == col)
-                    }) {
-                        alive.remove(at: cellIndex)
-                    }
+                neighbors = getSum(of: (row, col))
+                if neighbors == 3 {
+                    alive.append((row, col))
+                } else if neighbors == 2 && controlMatrix[row][col] == 1{
+                    alive.append((row, col))
                 }
             }
         }
@@ -62,10 +57,11 @@ class GameLogic {
         }
         var sum: Int = 0
         for row in location.x-1...location.x+1 {
-            for col in location.y-1...location.y+1 where (row != location.x || col != location.y) {
+            for col in location.y-1...location.y+1 {
                 sum += getState(of: (row, col))
             }
         }
+        sum -= controlMatrix[location.x][location.y]
         return sum
     }
 
@@ -80,28 +76,17 @@ class GameLogic {
         if location.x >= size || location.y >= size || location.x < 0 || location.y < 0 {
             return
         }
-        controlMatrix[location.x][location.y] = abs(controlMatrix[location.x][location.y] - 1)
+        switch controlMatrix[location.x][location.y] {
+        case 0:
+            controlMatrix[location.x][location.y] = 1
+            alive.append(location)
+        default:
+            controlMatrix[location.x][location.y] = 0
+            if let first = alive.firstIndex(where: { (place) -> Bool in
+                return place == location
+            }) {
+                alive.remove(at: first)
+            }
+        }
     }
-
-//    private static func spill(of location: (x: Int, y: Int)) {
-//        if location.x >= size || location.y >= size || location.x < 0 || location.y < 0 {
-//            return
-//        }
-//        for row in location.x-1...location.x+1 {
-//            for col in location.y-1...location.y+1 where (row != location.x && col != location.y) {
-//                changeState(of: location, by: 1)
-//            }
-//        }
-//    }
-//
-//    private static func drain(of location: (x: Int, y: Int)) {
-//        if location.x >= size || location.y >= size || location.x < 0 || location.y < 0 {
-//            return
-//        }
-//        for row in location.x-1...location.x+1 {
-//            for col in location.y-1...location.y+1 where (row != location.x && col != location.y) {
-//                changeState(of: location, by: -1)
-//            }
-//        }
-//    }
 }
