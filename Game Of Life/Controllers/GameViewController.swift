@@ -31,7 +31,6 @@ class GameViewController: UIViewController {
         setupCamera()
         GameLogic.newGame(size: 100)
         placeSpheres(matrix: GameLogic.controlMatrix)
-        updateSpheres(matrix: GameLogic.controlMatrix)
     }
 
     @objc
@@ -50,7 +49,11 @@ class GameViewController: UIViewController {
                 if let tappedNode = hitResults[0].node as? CellNode {
                     spawnTime += TimeInterval(1.0)
                     GameLogic.changeState(of: tappedNode.location)
-                    updateSpheres(matrix: GameLogic.controlMatrix)
+                    if GameLogic.controlMatrix[tappedNode.location.x][tappedNode.location.y] != 0 {
+                        tappedNode.color = UIColor.systemYellow
+                    } else {
+                        tappedNode.color = UIColor.systemGray
+                    }
                 }
             }
 
@@ -143,6 +146,7 @@ extension GameViewController {
                 scene.rootNode.addChildNode(cell)
             }
         }
+        updateSpheres(matrix: matrix)
     }
 
     func updateSpheres(matrix: [[Int]]) {
