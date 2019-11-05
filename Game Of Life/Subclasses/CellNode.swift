@@ -10,21 +10,32 @@ import SceneKit
 import UIKit
 
 class CellNode: SCNNode {
-    var state: Int = 0
-    var neighbors: Int = 0
+    var location: (Int, Int) = (0, 0)
+    var color: UIColor = UIColor.systemGray {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateColor()
+            }
+        }
+    }
 
     override init() {
         super.init()
     }
 
-    init(radius: CGFloat, _ color: UIColor = .white) {
+    init(radius: CGFloat) {
         super.init()
         let geometry = SCNSphere(radius: radius)
-        geometry.materials.first?.diffuse.contents = color
         self.geometry = geometry
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+
+    func updateColor() {
+        if let geo = self.geometry, let first = geo.materials.first {
+            first.diffuse.contents = self.color
+        }
     }
 }

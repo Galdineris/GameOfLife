@@ -15,10 +15,11 @@ class GameViewController: UIViewController {
     var globalMatrix: [[Int]] = [[1, 0, 0],
                                  [0, 1, 0],
                                  [0, 0, 1]]
-
+    var nodes: [CellNode] = []
     var scnView: SCNView?
     var scnScene: SCNScene?
     var cameraNode: SCNNode?
+    var spawnTime: TimeInterval = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,9 +28,49 @@ class GameViewController: UIViewController {
         setupView()
         setupScene()
         setupCamera()
-        placeSpheres(matrix: globalMatrix)
+        GameLogic.newGame(size: 10)
+        placeSpheres(matrix: GameLogic.controlMatrix)
     }
 
+    @objc
+    func handleTap(_ gestureRecognized: UIGestureRecognizer) {
+        // retrieve the SCNView
+        guard let scnView = self.view as? SCNView else {
+            return
+        }
+        // check if tap has ended
+        if gestureRecognized.state == .ended {
+            // check what nodes are tapped
+            let tapLocation: CGPoint = gestureRecognized.location(in: scnView)
+            let hitResults = scnView.hitTest(tapLocation, options: [:])
+            if !hitResults.isEmpty {
+                // retrieved the first clicked object
+                if let tappedNode = hitResults[0].node as? CellNode {
+                    GameLogic.changeState(of: tappedNode.location)
+                    placeSpheres(matrix: GameLogic.controlMatrix)
+                }
+                
+            }
+        }
+
+        // check that we clicked on at least one object
+    }
+    override var shouldAutorotate: Bool {
+        return false
+    }
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return .allButUpsideDown
+        } else {
+            return .all
+        }
+    }
+}
+
+extension GameViewController {
     func setupView() {
         // unwrap the SCNView
         guard let scnView = self.view as? SCNView else {
@@ -42,7 +83,7 @@ class GameViewController: UIViewController {
         scnView.showsStatistics = true
 
         // configure the view
-        scnView.backgroundColor = UIColor.black
+        scnView.backgroundColor = UIColor.white
         scnView.autoenablesDefaultLighting = true
 
         // add a tap gesture recognizer
@@ -54,7 +95,10 @@ class GameViewController: UIViewController {
         // Create Scene Object
         scnScene = GameOfLifeScene()
         // unwrap the SCNView
-        guard let scnView = self.view as? SCNView, let scene = scnScene else {
+        guard
+            let scnView = self.view as? SCNView,
+            let scene = scnScene
+            else {
             return
         }
         // set the scene to the view
@@ -74,52 +118,39 @@ class GameViewController: UIViewController {
     }
 
     func placeSpheres(matrix: [[Int]]) {
-        let radius: Int = 1
+        for node in nodes {
+            node.removeFromParentNode()
+        }
+        nodes = []
+        let radius: CGFloat = 0.5
         var color: UIColor = .white
         guard let scene = scnScene else {
             return
         }
-        for col in 0...matrix.count - 1 {
-            for row in 0...matrix[0].count - 1 {
-                if matrix[row][col] == 1 {
-                    color = UIColor.blue
+        for row in 0...matrix.count - 1 {
+            for col in 0...matrix[0].count - 1 {
+                if matrix[row][col] == 0 {
+                    color = UIColor.systemGray
                 } else {
-                    color = UIColor.orange
+                    color = UIColor.systemYellow
                 }
-                let cell = CellNode(radius: CGFloat(radius), color)
-                cell.position = SCNVector3(col * radius * 3, row * radius * 3, 0)
+                let cell = CellNode(radius: CGFloat(radius))
+                cell.location = (row, col)
+                nodes.append(cell)
+                cell.color = color
+                cell.position = SCNVector3(CGFloat(col) * radius * 2.5, CGFloat(row) * radius * 2.5, 0)
                 scene.rootNode.addChildNode(cell)
             }
         }
     }
+}
 
-    @objc
-    func handleTap(_ gestureRecognize: UIGestureRecognizer) {
-        // retrieve the SCNView
-        guard let scnView = self.view as? SCNView else {
-            return
-        }
-
-        // check what nodes are tapped
-        let tappedNodes = gestureRecognize.location(in: scnView)
-        let hitResults = scnView.hitTest(tappedNodes, options: [:])
-        // check that we clicked on at least one object
-        if !hitResults.isEmpty {
-            // retrieved the first clicked object
-            _ = hitResults[0]
-        }
-    }
-    override var shouldAutorotate: Bool {
-        return false
-    }
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .allButUpsideDown
-        } else {
-            return .all
+extension GameViewController: SCNSceneRendererDelegate {
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        if time > spawnTime && !GameLogic.paused {
+            GameLogic.nextGen()
+            placeSpheres(matrix: GameLogic.controlMatrix)
+            spawnTime = time + TimeInterval(1.0)
         }
     }
 }
