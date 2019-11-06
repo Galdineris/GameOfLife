@@ -73,10 +73,10 @@ class GameViewController: UIViewController {
         guard let safePauseBtn = pauseButton else {
             return
         }
-        if safePauseBtn.titleLabel?.text == "Start"{
-            safePauseBtn.setTitle("Stop", for: .normal)
+        if GameLogic.paused {
+            safePauseBtn.setImage(UIImage(systemName: "play.fill"), for: .normal)
         } else {
-            safePauseBtn.setTitle("Start", for: .normal)
+            safePauseBtn.setImage(UIImage(systemName: "stop.fill"), for: .normal)
         }
     }
 
@@ -116,7 +116,7 @@ extension GameViewController {
         safeScnView.showsStatistics = true
 
         // configure the view
-        safeScnView.backgroundColor = UIColor.white
+        safeScnView.backgroundColor = UIColor.black
         safeScnView.autoenablesDefaultLighting = true
 
         // add a tap gesture recognizer
@@ -134,10 +134,10 @@ extension GameViewController {
             return
         }
 
-        safePauseBtn.backgroundColor = UIColor(white: 0.0, alpha: 1)
+        safePauseBtn.backgroundColor = UIColor(white: 0.0, alpha: 0.5)
         safePauseBtn.layer.cornerRadius = 10
-        safePauseBtn.setTitle("Start", for: .normal)
-        safePauseBtn.titleLabel?.textColor = .white
+        safePauseBtn.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        safePauseBtn.tintColor = .white
         safePauseBtn.addTarget(self, action: #selector(buttonPress), for: .touchDown)
 
         self.view.addSubview(safePauseBtn)
