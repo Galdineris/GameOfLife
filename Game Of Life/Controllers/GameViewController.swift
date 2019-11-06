@@ -129,6 +129,7 @@ extension GameViewController {
     }
 
     func placeSpheres(matrix: [[Int]]) {
+        nodes = []
         let radius: CGFloat = 0.5
         let dislocation: CGFloat = ((radius * 2) * CGFloat(matrix.count)) * CGFloat(sqrtf(2))/2
         guard let scene = scnScene else {
@@ -139,7 +140,6 @@ extension GameViewController {
                 let cell = CellNode(radius: CGFloat(radius))
                 cell.location = (row, col)
                 nodes.append(cell)
-                cell.color = .systemGray
                 cell.position = SCNVector3((CGFloat(col) * radius * 2.5) - dislocation,
                                            (CGFloat(row) * radius * 2.5) - dislocation,
                                            0)

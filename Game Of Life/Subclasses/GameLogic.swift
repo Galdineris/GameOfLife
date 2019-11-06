@@ -40,7 +40,7 @@ class GameLogic {
                 neighbors = getSum(of: (row, col))
                 if neighbors == 3 {
                     alive.append((row, col))
-                } else if neighbors == 2 && controlMatrix[row][col] == 1{
+                } else if neighbors == 2 && controlMatrix[row][col] == 1 {
                     alive.append((row, col))
                 }
             }
