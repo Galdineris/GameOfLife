@@ -12,8 +12,8 @@ import SceneKit
 class GameLogic {
     static var size: Int = 0
     static var controlMatrix: [[Int]] = [[0, 0, 0],
-                                      [0, 1, 1],
-                                      [0, 1, 1]]
+                                      [0, 0, 0],
+                                      [0, 0, 0]]
     static var alive: [(Int, Int)] = []
     static var paused: Bool = true
 

@@ -19,6 +19,7 @@ class GameViewController: UIViewController {
     var scnView: SCNView?
     var scnScene: SCNScene?
     var cameraNode: SCNNode?
+    var btnTest: UIButton?
     var spawnTime: TimeInterval = 0
     var timeLoopSize: Float = 1
 
@@ -29,6 +30,7 @@ class GameViewController: UIViewController {
         setupView()
         setupScene()
         setupCamera()
+        setupHUD()
         GameLogic.newGame(size: 100)
         placeSpheres(matrix: GameLogic.controlMatrix)
     }
@@ -36,7 +38,7 @@ class GameViewController: UIViewController {
     @objc
     func handleTap(_ gestureRecognized: UIGestureRecognizer) {
         // retrieve the SCNView
-        guard let scnView = self.view as? SCNView else {
+        guard let scnView = scnView else {
             return
         }
         // check if tap has ended
@@ -79,10 +81,13 @@ class GameViewController: UIViewController {
 extension GameViewController {
     func setupView() {
         // unwrap the SCNView
-        guard let scnView = self.view as? SCNView else {
+        scnView = SCNView(frame: self.view.frame)
+
+        guard let scnView = scnView else {
             return
         }
 
+        self.view = scnView
         scnView.delegate = self
         scnView.loops = true
         scnView.isPlaying = true
@@ -102,23 +107,41 @@ extension GameViewController {
         scnView.addGestureRecognizer(tapGesture)
     }
 
+    func setupHUD() {
+        btnTest = UIButton(frame: .zero)
+        guard let btnTest = btnTest else {
+            return
+        }
+
+        btnTest.backgroundColor = .systemRed
+        btnTest.layer.cornerRadius = 10
+        btnTest.setTitle("Start", for: .normal)
+//        btnTest.addTarget(self, action: #selector(handleBtn), for: .touchDown)
+        self.view.addSubview(btnTest)
+
+        btnTest.translatesAutoresizingMaskIntoConstraints = false
+        btnTest.bottomAnchor.constraint(equalTo: self.view.bottomAnchor,
+                                        constant: -(self.view.safeAreaInsets.bottom)).isActive = true
+        btnTest.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        btnTest.widthAnchor.constraint(equalToConstant: self.view.frame.width - 32).isActive = true
+        btnTest.heightAnchor.constraint(equalToConstant: self.view.frame.height * 0.1).isActive = true
+    }
+
     func setupScene() {
         // Create Scene Object
         scnScene = GameOfLifeScene()
         // unwrap the SCNView
-        guard
-            let scnView = self.view as? SCNView,
-            let scene = scnScene
-            else {
+        guard let scnView = scnView, let scene = scnScene else {
             return
         }
+
         // set the scene to the view
         scnView.scene = scene
     }
 
     func setupCamera() {
         // unwrap the cameraNode
-        guard let scnView = self.view as? SCNView else {
+        guard let scnView = scnView else {
             return
         }
         cameraNode = scnView.pointOfView
