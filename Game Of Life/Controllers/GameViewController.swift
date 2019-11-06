@@ -19,9 +19,10 @@ class GameViewController: UIViewController {
     var scnView: SCNView?
     var scnScene: SCNScene?
     var cameraNode: SCNNode?
-    var btnTest: UIButton?
+    var pauseButton: UIButton?
+    var safeArea: UIEdgeInsets = UIEdgeInsets(top: 88, left: 44, bottom: 34, right: 44)
     var spawnTime: TimeInterval = 0
-    var timeLoopSize: Float = 1
+    var timeLoopSize: Float = 0.5
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +34,10 @@ class GameViewController: UIViewController {
         setupHUD()
         GameLogic.newGame(size: 100)
         placeSpheres(matrix: GameLogic.controlMatrix)
+    }
+
+    override func viewSafeAreaInsetsDidChange() {
+        safeArea = self.view.safeAreaInsets
     }
 
     @objc
@@ -49,7 +54,7 @@ class GameViewController: UIViewController {
             if !hitResults.isEmpty {
                 // retrieved the first clicked object
                 if let tappedNode = hitResults[0].node as? CellNode {
-                    spawnTime += TimeInterval(1.0)
+                    spawnTime += TimeInterval(1/timeLoopSize)
                     GameLogic.changeState(of: tappedNode.location)
                     if GameLogic.controlMatrix[tappedNode.location.x][tappedNode.location.y] != 0 {
                         tappedNode.color = UIColor.systemYellow
@@ -60,9 +65,21 @@ class GameViewController: UIViewController {
             }
 
         }
-
-        // check that we clicked on at least one object
     }
+
+    @objc
+    func buttonPress() {
+        GameLogic.paused.toggle()
+        guard let safePauseBtn = pauseButton else {
+            return
+        }
+        if safePauseBtn.titleLabel?.text == "Start"{
+            safePauseBtn.setTitle("Stop", for: .normal)
+        } else {
+            safePauseBtn.setTitle("Start", for: .normal)
+        }
+    }
+
     override var shouldAutorotate: Bool {
         return false
     }
@@ -83,48 +100,53 @@ extension GameViewController {
         // unwrap the SCNView
         scnView = SCNView(frame: self.view.frame)
 
-        guard let scnView = scnView else {
+        guard let safeScnView = scnView else {
             return
         }
 
-        self.view = scnView
-        scnView.delegate = self
-        scnView.loops = true
-        scnView.isPlaying = true
+        self.view = safeScnView
+        safeScnView.delegate = self
+        safeScnView.loops = true
+        safeScnView.isPlaying = true
 
         // allows the user to manipulate the camera
-        scnView.allowsCameraControl = true
+        safeScnView.allowsCameraControl = true
 
         // show statistics such as fps and timing information
-        scnView.showsStatistics = true
+        safeScnView.showsStatistics = true
 
         // configure the view
-        scnView.backgroundColor = UIColor.white
-        scnView.autoenablesDefaultLighting = true
+        safeScnView.backgroundColor = UIColor.white
+        safeScnView.autoenablesDefaultLighting = true
 
         // add a tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        scnView.addGestureRecognizer(tapGesture)
+        safeScnView.addGestureRecognizer(tapGesture)
     }
 
     func setupHUD() {
-        btnTest = UIButton(frame: .zero)
-        guard let btnTest = btnTest else {
+        setupPauseButton()
+    }
+
+    func setupPauseButton(){
+        pauseButton = UIButton(frame: .zero)
+        guard let safePauseBtn = pauseButton else {
             return
         }
 
-        btnTest.backgroundColor = .systemRed
-        btnTest.layer.cornerRadius = 10
-        btnTest.setTitle("Start", for: .normal)
-//        btnTest.addTarget(self, action: #selector(handleBtn), for: .touchDown)
-        self.view.addSubview(btnTest)
+        safePauseBtn.backgroundColor = UIColor(white: 0.0, alpha: 1)
+        safePauseBtn.layer.cornerRadius = 10
+        safePauseBtn.setTitle("Start", for: .normal)
+        safePauseBtn.titleLabel?.textColor = .white
+        safePauseBtn.addTarget(self, action: #selector(buttonPress), for: .touchDown)
 
-        btnTest.translatesAutoresizingMaskIntoConstraints = false
-        btnTest.bottomAnchor.constraint(equalTo: self.view.bottomAnchor,
-                                        constant: -(self.view.safeAreaInsets.bottom)).isActive = true
-        btnTest.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        btnTest.widthAnchor.constraint(equalToConstant: self.view.frame.width - 32).isActive = true
-        btnTest.heightAnchor.constraint(equalToConstant: self.view.frame.height * 0.1).isActive = true
+        self.view.addSubview(safePauseBtn)
+
+        safePauseBtn.translatesAutoresizingMaskIntoConstraints = false
+        safePauseBtn.topAnchor.constraint(equalTo: self.view.topAnchor, constant: self.safeArea.top).isActive = true
+        safePauseBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        safePauseBtn.widthAnchor.constraint(equalToConstant: self.view.frame.width * 0.2).isActive = true
+        safePauseBtn.heightAnchor.constraint(equalToConstant: self.view.frame.width * 0.2).isActive = true
     }
 
     func setupScene() {
@@ -141,10 +163,10 @@ extension GameViewController {
 
     func setupCamera() {
         // unwrap the cameraNode
-        guard let scnView = scnView else {
+        guard let safeScnView = scnView else {
             return
         }
-        cameraNode = scnView.pointOfView
+        cameraNode = safeScnView.pointOfView
         guard let camera = cameraNode else {
             return
         }
@@ -188,7 +210,7 @@ extension GameViewController: SCNSceneRendererDelegate {
         if time > spawnTime && !GameLogic.paused {
             GameLogic.nextGen()
             updateSpheres(matrix: GameLogic.controlMatrix)
-            spawnTime = time + TimeInterval(1.0)
+            spawnTime = time + TimeInterval(timeLoopSize/1)
         }
     }
 }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F2469521236CAE0C00A4A0C1 /* GameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2469520236CAE0C00A4A0C1 /* GameLogic.swift */; };
 		F280D814236B730500DED4D2 /* CellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F280D813236B730500DED4D2 /* CellNode.swift */; };
+		F299D0262373599C00C988F0 /* buttonGlyphs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F299D0252373599C00C988F0 /* buttonGlyphs.swift */; };
 		F2C26797236B5DB300CFAE37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C26796236B5DB300CFAE37 /* AppDelegate.swift */; };
 		F2C26799236B5DB300CFAE37 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = F2C26798236B5DB300CFAE37 /* art.scnassets */; };
 		F2C2679B236B5DB300CFAE37 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C2679A236B5DB300CFAE37 /* GameViewController.swift */; };
@@ -21,6 +22,7 @@
 /* Begin PBXFileReference section */
 		F2469520236CAE0C00A4A0C1 /* GameLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLogic.swift; sourceTree = "<group>"; };
 		F280D813236B730500DED4D2 /* CellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellNode.swift; sourceTree = "<group>"; };
+		F299D0252373599C00C988F0 /* buttonGlyphs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = buttonGlyphs.swift; sourceTree = "<group>"; };
 		F2C26793236B5DB300CFAE37 /* Game Of Life.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Game Of Life.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2C26796236B5DB300CFAE37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F2C26798236B5DB300CFAE37 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -48,6 +50,7 @@
 			children = (
 				F2C26796236B5DB300CFAE37 /* AppDelegate.swift */,
 				F2C267AB236B6B0B00CFAE37 /* GameOfLifeScene.swift */,
+				F299D0252373599C00C988F0 /* buttonGlyphs.swift */,
 				F280D813236B730500DED4D2 /* CellNode.swift */,
 				F2469520236CAE0C00A4A0C1 /* GameLogic.swift */,
 			);
@@ -194,6 +197,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F299D0262373599C00C988F0 /* buttonGlyphs.swift in Sources */,
 				F2C2679B236B5DB300CFAE37 /* GameViewController.swift in Sources */,
 				F280D814236B730500DED4D2 /* CellNode.swift in Sources */,
 				F2C26797236B5DB300CFAE37 /* AppDelegate.swift in Sources */,
