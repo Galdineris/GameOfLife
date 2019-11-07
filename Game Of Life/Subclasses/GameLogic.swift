@@ -9,12 +9,21 @@
 import Foundation
 import SceneKit
 
+struct Cell: Hashable, Equatable {
+    var xIndex: Int = 0
+    var yIndex: Int = 0
+    init(_ xIndex: Int, _ yIndex: Int) {
+        self.xIndex = xIndex
+        self.yIndex = yIndex
+    }
+}
+
 class GameLogic {
     static var size: Int = 0
     static var controlMatrix: [[Int]] = [[0, 0, 0],
-                                      [0, 0, 0],
-                                      [0, 0, 0]]
-    static var alive: [(Int, Int)] = []
+                                         [0, 0, 0],
+                                         [0, 0, 0]]
+    static var liveCells: Set<Cell> = Set()
     static var paused: Bool = true
 
     private static func createSqrMatrix() {
@@ -34,20 +43,23 @@ class GameLogic {
 
     public static func nextGen() {
         var neighbors: Int = 0
-        alive = []
-        for row in 0...size - 1 {
-            for col in 0...size - 1 {
-                neighbors = getSum(of: (row, col))
-                if neighbors == 3 {
-                    alive.append((row, col))
-                } else if neighbors == 2 && controlMatrix[row][col] == 1 {
-                    alive.append((row, col))
+        for cell in liveCells {
+            for row in (cell.xIndex - 1)...(cell.xIndex + 1) {
+                for col in ((cell.yIndex - 1)...(cell.yIndex + 1)) {
+                    neighbors = getSum(of: (row, col))
+                    if neighbors == 3 {
+                        liveCells.insert(Cell(row, col))
+                    } else if neighbors == 2 && controlMatrix[row][col] == 1 {
+                        liveCells.insert(Cell(row, col))
+                    } else {
+                        liveCells.remove(Cell(row, col))
+                    }
                 }
             }
         }
         createSqrMatrix()
-        for index in alive {
-            controlMatrix[index.0][index.1] = 1
+        for cell in liveCells {
+            controlMatrix[cell.xIndex][cell.yIndex] = 1
         }
     }
 
@@ -79,14 +91,10 @@ class GameLogic {
         switch controlMatrix[location.x][location.y] {
         case 0:
             controlMatrix[location.x][location.y] = 1
-            alive.append(location)
+            liveCells.insert(Cell(location.x, location.y))
         default:
             controlMatrix[location.x][location.y] = 0
-            if let first = alive.firstIndex(where: { (place) -> Bool in
-                return place == location
-            }) {
-                alive.remove(at: first)
-            }
+            liveCells.remove(Cell(location.x, location.y))
         }
     }
 }

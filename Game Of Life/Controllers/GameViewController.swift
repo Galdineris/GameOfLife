@@ -22,7 +22,7 @@ class GameViewController: UIViewController {
     var pauseButton: UIButton?
     var safeArea: UIEdgeInsets = UIEdgeInsets(top: 88, left: 44, bottom: 34, right: 44)
     var spawnTime: TimeInterval = 0
-    var timeLoopSize: Float = 0.5
+    var timeLoopSize: Float = 1
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +32,7 @@ class GameViewController: UIViewController {
         setupScene()
         setupCamera()
         setupHUD()
-        GameLogic.newGame(size: 100)
+        GameLogic.newGame(size: 20)
         placeSpheres(matrix: GameLogic.controlMatrix)
     }
 
@@ -54,7 +54,7 @@ class GameViewController: UIViewController {
             if !hitResults.isEmpty {
                 // retrieved the first clicked object
                 if let tappedNode = hitResults[0].node as? CellNode {
-                    spawnTime += TimeInterval(1/timeLoopSize)
+                    spawnTime += TimeInterval(timeLoopSize/1)
                     GameLogic.changeState(of: tappedNode.location)
                     if GameLogic.controlMatrix[tappedNode.location.x][tappedNode.location.y] != 0 {
                         tappedNode.color = UIColor.systemYellow
@@ -128,7 +128,7 @@ extension GameViewController {
         setupPauseButton()
     }
 
-    func setupPauseButton(){
+    func setupPauseButton() {
         pauseButton = UIButton(frame: .zero)
         guard let safePauseBtn = pauseButton else {
             return
