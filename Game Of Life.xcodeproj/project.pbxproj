@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F2469521236CAE0C00A4A0C1 /* GameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2469520236CAE0C00A4A0C1 /* GameLogic.swift */; };
+		F280D814236B730500DED4D2 /* CellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F280D813236B730500DED4D2 /* CellNode.swift */; };
 		F2C26797236B5DB300CFAE37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C26796236B5DB300CFAE37 /* AppDelegate.swift */; };
 		F2C26799236B5DB300CFAE37 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = F2C26798236B5DB300CFAE37 /* art.scnassets */; };
 		F2C2679B236B5DB300CFAE37 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C2679A236B5DB300CFAE37 /* GameViewController.swift */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F2469520236CAE0C00A4A0C1 /* GameLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLogic.swift; sourceTree = "<group>"; };
+		F280D813236B730500DED4D2 /* CellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellNode.swift; sourceTree = "<group>"; };
 		F2C26793236B5DB300CFAE37 /* Game Of Life.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Game Of Life.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2C26796236B5DB300CFAE37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F2C26798236B5DB300CFAE37 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -25,7 +29,7 @@
 		F2C2679F236B5DB400CFAE37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F2C267A2236B5DB400CFAE37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F2C267A4236B5DB400CFAE37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F2C267AB236B6B0B00CFAE37 /* GameOfLifeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfLifeScene.swift; sourceTree = "<group>"; };
+		F2C267AB236B6B0B00CFAE37 /* GameOfLifeScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOfLifeScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +43,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F280D812236B72D900DED4D2 /* Subclasses */ = {
+			isa = PBXGroup;
+			children = (
+				F2C26796236B5DB300CFAE37 /* AppDelegate.swift */,
+				F2C267AB236B6B0B00CFAE37 /* GameOfLifeScene.swift */,
+				F280D813236B730500DED4D2 /* CellNode.swift */,
+				F2469520236CAE0C00A4A0C1 /* GameLogic.swift */,
+			);
+			path = Subclasses;
+			sourceTree = "<group>";
+		};
 		F2C2678A236B5DB300CFAE37 = {
 			isa = PBXGroup;
 			children = (
@@ -60,8 +75,7 @@
 			children = (
 				F2C267AD236B6B1300CFAE37 /* Controllers */,
 				F2C267AE236B6B2600CFAE37 /* Views */,
-				F2C26796236B5DB300CFAE37 /* AppDelegate.swift */,
-				F2C267AB236B6B0B00CFAE37 /* GameOfLifeScene.swift */,
+				F280D812236B72D900DED4D2 /* Subclasses */,
 				F2C2679F236B5DB400CFAE37 /* Assets.xcassets */,
 				F2C26798236B5DB300CFAE37 /* art.scnassets */,
 				F2C267A4236B5DB400CFAE37 /* Info.plist */,
@@ -181,7 +195,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2C2679B236B5DB300CFAE37 /* GameViewController.swift in Sources */,
+				F280D814236B730500DED4D2 /* CellNode.swift in Sources */,
 				F2C26797236B5DB300CFAE37 /* AppDelegate.swift in Sources */,
+				F2469521236CAE0C00A4A0C1 /* GameLogic.swift in Sources */,
 				F2C267AC236B6B0B00CFAE37 /* GameOfLifeScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
