@@ -18,16 +18,16 @@ struct Cell: Hashable, Equatable {
     }
 }
 
-class GameLogic {
-    static var size: Int = 0
-    static var controlMatrix: [[Int]] = [[0, 0, 0],
-                                         [0, 0, 0],
-                                         [0, 0, 0]]
-    static var liveCells: Set<Cell> = Set()
-    static var paused: Bool = true
+class GameOfLifeLogic {
+    var size: Int = 0
+    var controlMatrix: [[Int]] = [[0, 0, 0],
+                                  [0, 0, 0],
+                                  [0, 0, 0]]
+    var liveCells: Set<Cell> = Set()
+    var paused: Bool = true
 
-    private static func createSqrMatrix() {
-        controlMatrix = []
+    private func createSqrMatrix() {
+        self.controlMatrix = []
         for index in 0...size - 1 {
             controlMatrix.append([])
             for _ in 0...size - 1 {
@@ -36,12 +36,13 @@ class GameLogic {
         }
     }
 
-    public static func newGame(size: Int) {
+    public func newGame(size: Int) {
         self.size = size
         self.createSqrMatrix()
+        self.paused = true
     }
 
-    public static func nextGen() {
+    public func nextGen() {
         var neighbors: Int = 0
         for cell in liveCells {
             for row in (cell.xIndex - 1)...(cell.xIndex + 1) {
@@ -63,7 +64,7 @@ class GameLogic {
         }
     }
 
-    private static func getSum(of location: (x: Int, y: Int)) -> Int {
+    private func getSum(of location: (x: Int, y: Int)) -> Int {
         if location.x >= size || location.y >= size || location.x < 0 || location.y < 0 {
             return 0
         }
@@ -77,14 +78,14 @@ class GameLogic {
         return sum
     }
 
-    private static func getState(of location: (x: Int, y: Int)) -> Int {
+    private func getState(of location: (x: Int, y: Int)) -> Int {
         if location.x >= size || location.y >= size || location.x < 0 || location.y < 0 {
             return 0
         }
         return controlMatrix[location.x][location.y]
     }
 
-    public static func changeState(of location: (x: Int, y: Int)) {
+    public func changeState(of location: (x: Int, y: Int)) {
         if location.x >= size || location.y >= size || location.x < 0 || location.y < 0 {
             return
         }

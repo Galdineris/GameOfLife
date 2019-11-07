@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F2469521236CAE0C00A4A0C1 /* GameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2469520236CAE0C00A4A0C1 /* GameLogic.swift */; };
+		F2469521236CAE0C00A4A0C1 /* GameOfLifeLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2469520236CAE0C00A4A0C1 /* GameOfLifeLogic.swift */; };
 		F280D814236B730500DED4D2 /* CellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F280D813236B730500DED4D2 /* CellNode.swift */; };
 		F2C26797236B5DB300CFAE37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C26796236B5DB300CFAE37 /* AppDelegate.swift */; };
 		F2C26799236B5DB300CFAE37 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = F2C26798236B5DB300CFAE37 /* art.scnassets */; };
@@ -19,7 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F2469520236CAE0C00A4A0C1 /* GameLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLogic.swift; sourceTree = "<group>"; };
+		F2469520236CAE0C00A4A0C1 /* GameOfLifeLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfLifeLogic.swift; sourceTree = "<group>"; };
 		F280D813236B730500DED4D2 /* CellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellNode.swift; sourceTree = "<group>"; };
 		F2C26793236B5DB300CFAE37 /* Game Of Life.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Game Of Life.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2C26796236B5DB300CFAE37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -49,7 +49,7 @@
 				F2C26796236B5DB300CFAE37 /* AppDelegate.swift */,
 				F2C267AB236B6B0B00CFAE37 /* GameOfLifeScene.swift */,
 				F280D813236B730500DED4D2 /* CellNode.swift */,
-				F2469520236CAE0C00A4A0C1 /* GameLogic.swift */,
+				F2469520236CAE0C00A4A0C1 /* GameOfLifeLogic.swift */,
 			);
 			path = Subclasses;
 			sourceTree = "<group>";
@@ -197,7 +197,7 @@
 				F2C2679B236B5DB300CFAE37 /* GameViewController.swift in Sources */,
 				F280D814236B730500DED4D2 /* CellNode.swift in Sources */,
 				F2C26797236B5DB300CFAE37 /* AppDelegate.swift in Sources */,
-				F2469521236CAE0C00A4A0C1 /* GameLogic.swift in Sources */,
+				F2469521236CAE0C00A4A0C1 /* GameOfLifeLogic.swift in Sources */,
 				F2C267AC236B6B0B00CFAE37 /* GameOfLifeScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

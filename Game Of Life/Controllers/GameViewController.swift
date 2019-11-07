@@ -12,28 +12,32 @@ import SceneKit
 
 class GameViewController: UIViewController {
 
-    var globalMatrix: [[Int]] = [[1, 0, 0],
-                                 [0, 1, 0],
-                                 [0, 0, 1]]
+    var gridSize: Int = 20
     var nodes: [CellNode] = []
+    var gameOfLife: GameOfLifeLogic = GameOfLifeLogic()
     var scnView: SCNView?
     var scnScene: SCNScene?
     var cameraNode: SCNNode?
     var pauseButton: UIButton?
-    var safeArea: UIEdgeInsets = UIEdgeInsets(top: 88, left: 44, bottom: 34, right: 44)
+    var changeButton: UIButton?
+    var resetButton: UIButton?
+    var safeArea: UIEdgeInsets = UIEdgeInsets(top: 88,
+                                              left: 44,
+                                              bottom: 34,
+                                              right: 44)
     var spawnTime: TimeInterval = 0
     var timeLoopSize: Float = 1
+    var historyStacking: Bool = false
+    var currentLayer: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // create a new scene
         setupView()
         setupScene()
         setupCamera()
         setupHUD()
-        GameLogic.newGame(size: 20)
-        placeSpheres(matrix: GameLogic.controlMatrix)
+        gameOfLife.newGame(size: gridSize)
+        placeSpheres(matrix: gameOfLife.controlMatrix)
     }
 
     override func viewSafeAreaInsetsDidChange() {
@@ -55,11 +59,11 @@ class GameViewController: UIViewController {
                 // retrieved the first clicked object
                 if let tappedNode = hitResults[0].node as? CellNode {
                     spawnTime += TimeInterval(timeLoopSize/1)
-                    GameLogic.changeState(of: tappedNode.location)
-                    if GameLogic.controlMatrix[tappedNode.location.x][tappedNode.location.y] != 0 {
+                    gameOfLife.changeState(of: tappedNode.location)
+                    if gameOfLife.controlMatrix[tappedNode.location.x][tappedNode.location.y] != 0 {
                         tappedNode.color = UIColor.systemYellow
                     } else {
-                        tappedNode.color = UIColor.systemGray
+                        tappedNode.color = UIColor(red: 72, green: 72, blue: 74, alpha: 0.2)
                     }
                 }
             }
@@ -68,16 +72,42 @@ class GameViewController: UIViewController {
     }
 
     @objc
-    func buttonPress() {
-        GameLogic.paused.toggle()
+    func playBtnPress() {
+        gameOfLife.paused.toggle()
         guard let safePauseBtn = pauseButton else {
             return
         }
-        if GameLogic.paused {
+        if gameOfLife.paused {
             safePauseBtn.setImage(UIImage(systemName: "play.fill"), for: .normal)
         } else {
             safePauseBtn.setImage(UIImage(systemName: "stop.fill"), for: .normal)
         }
+    }
+    @objc
+    func changeBtnPress() {
+        historyStacking.toggle()
+        guard let safeChangeBtn = changeButton else {
+            return
+        }
+        if historyStacking {
+            safeChangeBtn.setImage(UIImage(systemName: "hexagon.fill"), for: .normal)
+        } else {
+            safeChangeBtn.setImage(UIImage(systemName: "hexagon"), for: .normal)
+        }
+    }
+
+    @objc
+    func resetBtnPress() {
+        historyStacking = false
+        currentLayer = 0
+        clearScene()
+        gameOfLife.newGame(size: gridSize)
+        placeSpheres(matrix: gameOfLife.controlMatrix)
+        guard let safePauseBtn = pauseButton, let safeChangeBtn = changeButton else {
+            return
+        }
+        safePauseBtn.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        safeChangeBtn.setImage(UIImage(systemName: "hexagon"), for: .normal)
     }
 
     override var shouldAutorotate: Bool {
@@ -113,7 +143,7 @@ extension GameViewController {
         safeScnView.allowsCameraControl = true
 
         // show statistics such as fps and timing information
-        safeScnView.showsStatistics = true
+        safeScnView.showsStatistics = false
 
         // configure the view
         safeScnView.backgroundColor = UIColor.black
@@ -126,6 +156,8 @@ extension GameViewController {
 
     func setupHUD() {
         setupPauseButton()
+        setupChangeButton()
+        setupResetButton()
     }
 
     func setupPauseButton() {
@@ -138,7 +170,7 @@ extension GameViewController {
         safePauseBtn.layer.cornerRadius = 10
         safePauseBtn.setImage(UIImage(systemName: "play.fill"), for: .normal)
         safePauseBtn.tintColor = .white
-        safePauseBtn.addTarget(self, action: #selector(buttonPress), for: .touchDown)
+        safePauseBtn.addTarget(self, action: #selector(playBtnPress), for: .touchDown)
 
         self.view.addSubview(safePauseBtn)
 
@@ -147,6 +179,60 @@ extension GameViewController {
         safePauseBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         safePauseBtn.widthAnchor.constraint(equalToConstant: self.view.frame.width * 0.2).isActive = true
         safePauseBtn.heightAnchor.constraint(equalToConstant: self.view.frame.width * 0.2).isActive = true
+    }
+
+    func setupChangeButton() {
+        changeButton = UIButton(frame: .zero)
+        guard let safeChangeButton = changeButton else {
+            return
+        }
+
+        safeChangeButton.backgroundColor = UIColor(white: 0.0, alpha: 0.5)
+        safeChangeButton.layer.cornerRadius = 10
+        safeChangeButton.setImage(UIImage(systemName: "hexagon"), for: .normal)
+        safeChangeButton.tintColor = .white
+        safeChangeButton.addTarget(self, action: #selector(changeBtnPress), for: .touchDown)
+
+        self.view.addSubview(safeChangeButton)
+
+        safeChangeButton.translatesAutoresizingMaskIntoConstraints = false
+        if let safePauseBtn = pauseButton {
+            safeChangeButton.topAnchor.constraint(equalTo: safePauseBtn.bottomAnchor,
+                                              constant: self.view.frame.width * 0.04).isActive = true
+        } else {
+            safeChangeButton.topAnchor.constraint(equalTo: self.view.topAnchor,
+                                              constant: self.safeArea.top).isActive = true
+        }
+        safeChangeButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        safeChangeButton.widthAnchor.constraint(equalToConstant: self.view.frame.width * 0.2).isActive = true
+        safeChangeButton.heightAnchor.constraint(equalToConstant: self.view.frame.width * 0.2).isActive = true
+    }
+
+    func setupResetButton() {
+        resetButton = UIButton(frame: .zero)
+        guard let safeResetButton = resetButton else {
+            return
+        }
+
+        safeResetButton.backgroundColor = UIColor(white: 0.0, alpha: 0.5)
+        safeResetButton.layer.cornerRadius = 10
+        safeResetButton.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
+        safeResetButton.tintColor = .white
+        safeResetButton.addTarget(self, action: #selector(resetBtnPress), for: .touchDown)
+
+        self.view.addSubview(safeResetButton)
+
+        safeResetButton.translatesAutoresizingMaskIntoConstraints = false
+        if let safeChangeBtn = changeButton {
+            safeResetButton.topAnchor.constraint(equalTo: safeChangeBtn.bottomAnchor,
+                                              constant: self.view.frame.width * 0.04).isActive = true
+        } else {
+            safeResetButton.topAnchor.constraint(equalTo: self.view.bottomAnchor,
+                                              constant: self.safeArea.bottom).isActive = true
+        }
+        safeResetButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        safeResetButton.widthAnchor.constraint(equalToConstant: self.view.frame.width * 0.2).isActive = true
+        safeResetButton.heightAnchor.constraint(equalToConstant: self.view.frame.width * 0.2).isActive = true
     }
 
     func setupScene() {
@@ -173,7 +259,7 @@ extension GameViewController {
         camera.position = SCNVector3(0, 0, 30)
     }
 
-    func placeSpheres(matrix: [[Int]]) {
+    func placeSpheres(matrix: [[Int]], layer: CGFloat  = 0) {
         nodes = []
         let radius: CGFloat = 0.5
         let dislocation: CGFloat = ((radius * 2) * CGFloat(matrix.count)) * CGFloat(sqrtf(2))/2
@@ -187,7 +273,7 @@ extension GameViewController {
                 nodes.append(cell)
                 cell.position = SCNVector3((CGFloat(col) * radius * 2.5) - dislocation,
                                            (CGFloat(row) * radius * 2.5) - dislocation,
-                                           0)
+                                           (radius * 5) * layer)
                 scene.rootNode.addChildNode(cell)
             }
         }
@@ -199,18 +285,32 @@ extension GameViewController {
             if matrix[node.location.x][node.location.y] != 0 {
                 node.color = UIColor.systemYellow
             } else {
-                node.color = UIColor.systemGray
+                node.color = UIColor(red: 72, green: 72, blue: 74, alpha: 0.2)
             }
+        }
+    }
+
+    func clearScene() {
+        guard let scene = scnScene else {
+            return
+        }
+        scene.rootNode.enumerateChildNodes { (node, _) in
+            node.removeFromParentNode()
         }
     }
 }
 
 extension GameViewController: SCNSceneRendererDelegate {
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        if time > spawnTime && !GameLogic.paused {
-            GameLogic.nextGen()
-            updateSpheres(matrix: GameLogic.controlMatrix)
+        if time > spawnTime && !gameOfLife.paused {
+            gameOfLife.nextGen()
             spawnTime = time + TimeInterval(timeLoopSize/1)
+            if self.historyStacking {
+                self.currentLayer += 1
+                placeSpheres(matrix: gameOfLife.controlMatrix, layer: CGFloat(currentLayer))
+            } else {
+                updateSpheres(matrix: gameOfLife.controlMatrix)
+            }
         }
     }
 }
