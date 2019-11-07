@@ -113,7 +113,7 @@ extension GameViewController {
         safeScnView.allowsCameraControl = true
 
         // show statistics such as fps and timing information
-        safeScnView.showsStatistics = true
+        safeScnView.showsStatistics = false
 
         // configure the view
         safeScnView.backgroundColor = UIColor.black
